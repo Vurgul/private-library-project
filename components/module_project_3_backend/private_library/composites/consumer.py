@@ -21,7 +21,7 @@ class DB:
 
 class Application:
     books = services.BookServices(
-        issue_repo=DB.books_repo,
+        book_repo=DB.books_repo,
     )
 
 

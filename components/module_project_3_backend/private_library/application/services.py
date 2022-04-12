@@ -35,6 +35,19 @@ class JournalReload(DTO):
     id: Optional[int]
 
 
+class NewBook(DTO):
+    title: str
+    authors: str
+    publisher: str
+    language: str
+    isbn13: str
+    pages: int
+    year: int
+    rating: float
+    price_USD: float
+    desc: Optional[str]
+    id: Optional[int]
+
 @component
 class Authorization:
     user_repo: interfaces.UsersRepo
@@ -134,7 +147,9 @@ class BookServices:
     book_repo: interfaces.BooksRepo
 
     @join_point
-    def take_message(self): ...
+    def take_message(self, object_date: dict):
+
+        print('TEXT')
 
 
 @component

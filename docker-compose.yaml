@@ -14,17 +14,17 @@ services:
     env_file:
       - .env
     #docker-compose run --rm backend_module_project_3 private_library library-filling
-#  cli:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    restart: unless-stopped
-#    depends_on:
-#      - db
-#      - rabbitmq
-#    env_file:
-#      - .env
-#    entrypoint: ['private_library', 'library_filling']
+  consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db
+      - rabbitmq
+    env_file:
+      - .env
+    entrypoint: ['python', '-m', 'components.module_project_3_backend.private_library.composites.consumer']
 
 
   db:
