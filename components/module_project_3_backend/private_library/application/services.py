@@ -7,7 +7,7 @@ from evraz.classic.messaging import Message, Publisher
 from pydantic import validate_arguments
 
 from . import errors, interfaces
-from .dataclasses import User
+from .dataclasses import User, Book, Journal
 
 join_points = PointCut()
 join_point = join_points.join_point
@@ -27,6 +27,12 @@ class UserUpDateInfo(DTO):
     name: Optional[str]
     age: Optional[int]
     id: int
+
+
+class JournalReload(DTO):
+    user_id: int
+    book_id: int
+    id: Optional[int]
 
 
 @component
@@ -124,42 +130,67 @@ class UserService:
 
 
 @component
+class BookServices:
+    book_repo: interfaces.BooksRepo
+
+    @join_point
+    def take_message(self): ...
+
+
+@component
 class Library:
     user_repo: interfaces.UsersRepo
     book_repo: interfaces.BooksRepo
     journal_repo: interfaces.JournalRepo
 
     @join_point
-    @validate_with_dto
-    def take_books_info(self):
-        pass
+    @validate_arguments
+    def take_books_info(self) -> List[Book]:
+        books = self.book_repo.get_all()
+        return books
 
     @join_point
-    @validate_with_dto
-    def take_book_info(self):
-        pass
+    @validate_arguments
+    def take_book_info(self, book_id: int) -> Book:
+        book = self.book_repo.get_by_id(book_id)
+        if book is None:
+            raise errors.NoBook(id=book_id)
+
+        return book
 
     @join_point
-    @validate_with_dto
-    def take_self_journal(self):
-        pass
+    @validate_arguments
+    def take_self_journal(self, user_id: int) -> List[Journal]:
+        journal_records = self.journal_repo.get_by_user_id(user_id)
+        return journal_records
 
     @join_point
-    @validate_with_dto
-    def take_active_book(self):
-        pass
+    @validate_arguments
+    def take_active_book(self, user_id: int) -> Book:
+        journal_record = self.journal_repo.get_active_record(user_id)
+        if journal_record in None:
+            raise errors.NoJournal(id=user_id)
+        book = self.take_book_info(journal_record.book_id)
+        return book
 
     @join_point
-    @validate_with_dto
-    def open_reserve_book(self):
-        pass
+    @validate_arguments
+    def open_reserve_book(self, user_id: int, book_id: int):
+        journal_records = self.journal_repo.get_by_book_id(book_id)
+
+        for journal_record in journal_records:
+            if journal_record.action != 'return':
+                raise errors.BookBusy(id=book_id)
+
 
     @join_point
-    @validate_with_dto
+    @validate_arguments
     def close_reserve_book(self):
         pass
 
     @join_point
-    @validate_with_dto
+    @validate_arguments
     def buy_book(self):
         pass
+
+

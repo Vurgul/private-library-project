@@ -3,7 +3,6 @@ services:
 
   backend_module_project_3:
     build:
-      #context: deployment/module_project_3_backend/.
       context: .
       dockerfile: Dockerfile
     ports:
@@ -13,7 +12,20 @@ services:
       - db
       - rabbitmq
     env_file:
-      - deployment/module_project_3_backend/.env
+      - .env
+    #docker-compose run --rm backend_module_project_3 private_library library-filling
+#  cli:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    restart: unless-stopped
+#    depends_on:
+#      - db
+#      - rabbitmq
+#    env_file:
+#      - .env
+#    entrypoint: ['private_library', 'library_filling']
+
 
   db:
     image: postgres:14
@@ -24,7 +36,7 @@ services:
     volumes:
       - ./volumes/db
     env_file:
-        - deployment/module_project_3_backend/.env
+        - .env
 
   nginx:
     image: nginx:1.21.6

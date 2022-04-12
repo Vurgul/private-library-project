@@ -4,12 +4,17 @@ WORKDIR /app
 
 COPY components/module_project_3_backend/setup.cfg .
 COPY components/module_project_3_backend/setup.py .
-
-#COPY components/module_project_3_backend /app
+COPY dist ./dist/
 
 
 RUN pip install --upgrade --no-cache-dir pip && pip install -e ".[dev]"
+RUN pip install ./dist/*.tar.gz
+
+
+COPY components/module_project_3_backend/ .
 COPY . .
 
-CMD ["gunicorn", "-b", "0.0.0.0:1111", "private_library.composites.private_library:app", "--reload"]
+#CMD['cunsumer']
+#CMD['cli']
+CMD ["gunicorn", "-b", "0.0.0.0:1111", "components.module_project_3_backend.private_library.composites.private_library_api:app", "--reload"]
 

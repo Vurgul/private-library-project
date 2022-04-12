@@ -51,6 +51,10 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         query = select(Book)
         return self.session.execute(query).scalars().all()
 
+    def get_by_isbn13(self, isbn13: int) -> Optional[Book]:
+        query = select(Book).where(Book.isbn13 == isbn13)
+        return self.session.execute(query).scalars().one_or_none()
+
 
 @component
 class JournalRepo(BooksRepo, interfaces.JournalRepo):
@@ -69,3 +73,18 @@ class JournalRepo(BooksRepo, interfaces.JournalRepo):
     def get_all(self) -> List[Journal]:
         query = select(Journal)
         return self.session.execute(query).scalars().all()
+
+    def get_by_user_id(self, user_id: int) -> List[Journal]:
+        query = select(Journal).where(Journal.user_id == user_id)
+        return self.session.execute(query).scalars().all()
+
+    def get_by_book_id(self, book_id: int) -> List[Journal]:
+        query = select(Journal).where(Journal.book_id == book_id)
+        return self.session.execute(query).scalars().all()
+
+    def get_active_record(self, user_id: int) -> Optional[Journal]:
+        query = select(Journal).where(
+            Journal.action == 'take',
+            Journal.user_id == user_id
+        )
+        return self.session.execute(query).scalars().one_or_none()

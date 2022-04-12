@@ -33,6 +33,7 @@ class Authorization:
         response.media = {'token': token}
 
 
+@authenticator_needed
 @component
 class Users:
     users: services.UserService
@@ -79,6 +80,7 @@ class Users:
         )
 
 
+@authenticator_needed
 @component
 class Library:
     library: services.Library

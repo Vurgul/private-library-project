@@ -13,7 +13,7 @@ class Settings:
 
 
 class DB:
-    engine = create_engine(Settings.db.DB_URL)  # , echo=True
+    engine = create_engine(Settings.db.DB_URL, echo=True)  # , echo=True
     database.metadata.create_all(engine)
 
     context = TransactionContext(bind=engine)
@@ -50,7 +50,7 @@ class Application:
     )
     library = services.Library(
         user_repo=DB.users_repo,
-        books_repo=DB.books_repo,
+        book_repo=DB.books_repo,
         journal_repo=DB.journal_repo,
     )
 
