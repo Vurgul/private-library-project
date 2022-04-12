@@ -20,7 +20,7 @@ users = Table(
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('name', String(128), nullable=False),
     Column('age', Integer, nullable=True),
-    Column('login', String(128), nullable=False),
+    Column('login', String(128), nullable=False, unique=True),
     Column('password', String(128), nullable=False),
 )
 
@@ -28,15 +28,15 @@ books = Table(
     'books',
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('title', String(128), nullable=False),
-    Column('authors', String(128), nullable=False),
-    Column('publisher', String(128), nullable=False),
-    Column('language', String(128), nullable=False),
-    Column('isbn13', String(128), nullable=False),
+    Column('title', String(1000), nullable=False),
+    Column('authors', String(1000), nullable=False),
+    Column('publisher', String(1000), nullable=False),
+    Column('language', String(1000), nullable=False),
+    Column('isbn13', String(1000), nullable=False),
     Column('pages', Integer, nullable=False),
     Column('year', Integer, nullable=True),
     Column('rating', Float, nullable=False),
-    Column('desc', String(256), nullable=True),
+    Column('desc', String(1000), nullable=True),
     Column('price_USD', Float, nullable=False),
 )
 

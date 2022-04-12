@@ -31,6 +31,8 @@ def create_cli(publisher: Publisher, MessageBus):
                     res_book_info = requests.get(
                         f'{URL_BOOKS_ISBN}/{isbn13}'
                     ).json()
+
+                    res_book_info['price_USD'] = float(res_book_info['price'][1:])
                     print(res_book_info)
                     if publisher:
                         publisher.publish(

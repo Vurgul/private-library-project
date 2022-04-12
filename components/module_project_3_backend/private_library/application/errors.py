@@ -19,3 +19,13 @@ class NoJournal(AppError):
 class BookBusy(AppError):
     msg_template = 'Book with id {id} busy'
     code = 'book.book_busy'
+
+
+class NotUniqueLogin(AppError):
+    msg_template = 'User with login {login} exists'
+    code = 'user.not_unique_login'
+
+
+class IncorrectData(AppError):
+    msg_template = 'Invalid login or password'
+    code = 'user.incorrect_date'

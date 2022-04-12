@@ -32,6 +32,10 @@ class UsersRepo(BaseRepository, interfaces.UsersRepo):
         )
         return self.session.execute(query).scalars().one_or_none()
 
+    def get_by_login(self, login: str) -> Optional[User]:
+        query = select(User).where(User.login == login)
+        return self.session.execute(query).scalars().one_or_none()
+
 
 @component
 class BooksRepo(BaseRepository, interfaces.BooksRepo):
@@ -51,7 +55,7 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         query = select(Book)
         return self.session.execute(query).scalars().all()
 
-    def get_by_isbn13(self, isbn13: int) -> Optional[Book]:
+    def get_by_isbn13(self, isbn13: str) -> Optional[Book]:
         query = select(Book).where(Book.isbn13 == isbn13)
         return self.session.execute(query).scalars().one_or_none()
 

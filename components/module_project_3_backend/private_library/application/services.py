@@ -35,7 +35,7 @@ class JournalReload(DTO):
     id: Optional[int]
 
 
-class NewBook(DTO):
+class BookInfo(DTO):
     title: str
     authors: str
     publisher: str
@@ -55,6 +55,8 @@ class Authorization:
     @join_point
     @validate_with_dto
     def add_user(self, user_info: UserInfo):
+        if self.user_repo.get_by_login(user_info.login) is not None:
+            raise errors.NotUniqueLogin(login=user_info.login)
         user = user_info.create_obj(User)
         self.user_repo.add(user)
 
@@ -70,6 +72,8 @@ class Authorization:
     @validate_arguments
     def authentication(self, login: str, password: str) -> User:
         user = self.user_repo.get_by_user_data(login, password)
+        if user is None:
+            raise errors.IncorrectData()
         return user
 
 
@@ -147,9 +151,32 @@ class BookServices:
     book_repo: interfaces.BooksRepo
 
     @join_point
+    @validate_arguments
     def take_message(self, object_date: dict):
+        #book_info = BookInfo(
+        #    **object_date
+        #)
+        print(object_date)
+        book_info = BookInfo(
+            title=object_date['title'],
+            authors=object_date['authors'],
+            publisher=object_date['publisher'],
+            language=object_date['language'],
+            isbn13=object_date['isbn13'],
+            pages=object_date['pages'],
+            year=object_date['year'],
+            rating=object_date['rating'],
+            price_USD=object_date['price_USD'],
+        )
+        print(book_info)
+        self.add_book(book_info)
 
-        print('TEXT')
+    @validate_with_dto
+    def add_book(self, book_info: BookInfo):
+        if self.book_repo.get_by_isbn13(book_info.isbn13) is None:
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            book = book_info.create_obj(Book)
+            self.book_repo.add(book)
 
 
 @component

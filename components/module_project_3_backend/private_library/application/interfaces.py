@@ -21,6 +21,9 @@ class UsersRepo(ABC):
     @abstractmethod
     def get_by_user_data(self, login: str, password: str) -> User: ...
 
+    @abstractmethod
+    def get_by_login(self, login: str) -> Optional[User]: ...
+
 
 class BooksRepo(ABC):
 
@@ -37,7 +40,7 @@ class BooksRepo(ABC):
     def get_all(self) -> List[Book]: ...
 
     @abstractmethod
-    def get_by_isbn13(self, isbn13: int) -> Optional[Book]: ...
+    def get_by_isbn13(self, isbn13: str) -> Optional[Book]: ...
 
 
 class JournalRepo(ABC):

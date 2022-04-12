@@ -84,3 +84,44 @@ class Users:
 @component
 class Library:
     library: services.Library
+
+    @join_point
+    def on_get_books(self, request, response):
+        """Получить информацию о всех книгах"""
+        books = self.library.take_books_info()
+        print(books)
+        response.media = [asdict(book) for book in books]
+
+    @join_point
+    @authenticate
+    def on_get_book(self, request, response):
+        """Получить информацию о книге"""
+        book = self.library.take_book_info(
+            **request.media
+        )
+        response.media = asdict(book)
+
+    @join_point
+    @authenticate
+    def on_get_journal(self, request, response):
+        """Получить список ранее взятых книг"""
+
+    @join_point
+    @authenticate
+    def on_get_active_book(self, request, response):
+        """Получить активную книгу"""
+
+    @join_point
+    @authenticate
+    def on_post_reserve_book(self, request, response):
+        """Забронировать книгу"""
+
+    @join_point
+    @authenticate
+    def on_post_return_book(self, request, response):
+        """Вернуть книгу"""
+
+    @join_point
+    @authenticate
+    def on_post_buy_book(self, request, response):
+        """Выкупить книгу"""
