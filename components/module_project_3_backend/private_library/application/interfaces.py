@@ -42,6 +42,22 @@ class BooksRepo(ABC):
     @abstractmethod
     def get_by_isbn13(self, isbn13: str) -> Optional[Book]: ...
 
+    @abstractmethod
+    def filter_by_keyword(
+        self,
+        keyword: str,
+        value
+    ) -> List[Book]: ...
+
+    @abstractmethod
+    def filter_by_price(self, price: float, books: List[Book]) -> List[Book]: ...
+
+    @abstractmethod
+    def filter_by_authors(self, price: float, books: List[Book]) -> List[Book]: ...
+
+    @abstractmethod
+    def order_by_keyword(self, keyword) -> List[Book]: ...
+
 
 class JournalRepo(ABC):
 

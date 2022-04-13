@@ -48,6 +48,15 @@ class BookInfo(DTO):
     desc: Optional[str]
     id: Optional[int]
 
+
+class FilterBook(DTO):
+    price_USD: Optional[float]
+    keyword: Optional[str]
+    authors: Optional[str]
+    publisher: Optional[str]
+    order_by: Optional[str]
+
+
 @component
 class Authorization:
     user_repo: interfaces.UsersRepo
@@ -151,13 +160,28 @@ class BookServices:
     book_repo: interfaces.BooksRepo
 
     @join_point
-    @validate_arguments
     def take_message(self, object_date: dict):
-        #book_info = BookInfo(
-        #    **object_date
-        #)
-        print(object_date)
-        book_info = BookInfo(
+        print('1234567')
+        book_info = BookInfo(**object_date)
+        book = book_info.create_obj(Book)
+        self.book_repo.add(book)
+
+
+        book = Book(
+            title=object_date['title'],
+            authors=object_date['authors'],
+            publisher=object_date['publisher'],
+            language=object_date['language'],
+            isbn13=object_date['isbn13'],
+            pages=object_date['pages'],
+            year=object_date['year'],
+            rating=object_date['rating'],
+            desc=object_date['desc'],
+            price_USD=object_date['price_USD'],
+        )
+        # self.book_repo.add(book)
+
+        book_infooo = BookInfo(
             title=object_date['title'],
             authors=object_date['authors'],
             publisher=object_date['publisher'],
@@ -168,9 +192,10 @@ class BookServices:
             rating=object_date['rating'],
             price_USD=object_date['price_USD'],
         )
-        print(book_info)
-        self.add_book(book_info)
+        #print(book)
+        #self.add_book(book_info)
 
+    @join_point
     @validate_with_dto
     def add_book(self, book_info: BookInfo):
         if self.book_repo.get_by_isbn13(book_info.isbn13) is None:
@@ -190,6 +215,14 @@ class Library:
     def take_books_info(self) -> List[Book]:
         books = self.book_repo.get_all()
         return books
+
+    @join_point
+    @validate_with_dto
+    def take_books_with_filter_and_sort(self, filter_date: FilterBook) -> List[Book]:
+        books = self.book_repo.get_all()
+
+        return books
+
 
     @join_point
     @validate_arguments

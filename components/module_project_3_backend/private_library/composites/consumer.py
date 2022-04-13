@@ -1,7 +1,7 @@
 from evraz.classic.sql_storage import TransactionContext
 from kombu import Connection
 from sqlalchemy import create_engine
-from private_library.adapters import database, message_bus
+from private_library.adapters import database, message_bus, private_library_api
 from private_library.application import services
 
 
@@ -33,6 +33,11 @@ class MessageBus:
     @staticmethod
     def declare_scheme():
         message_bus.broker_scheme.declare(MessageBus.connection)
+
+
+class Aspects:
+    services.join_points.join(DB.context)
+    private_library_api.join_points.join(DB.context)
 
 
 if __name__ == '__main__':

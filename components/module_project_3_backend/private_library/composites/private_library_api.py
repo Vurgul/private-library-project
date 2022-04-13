@@ -53,6 +53,9 @@ class Application:
         book_repo=DB.books_repo,
         journal_repo=DB.journal_repo,
     )
+    books = services.BookServices(
+        book_repo=DB.books_repo,
+    )
 
 
 class Aspects:

@@ -39,8 +39,6 @@ def create_cli(publisher: Publisher, MessageBus):
                             Message(
                                 'our_exchange',
                                 {
-                                    #'action': 'take',
-                                    #'object': 'book',
                                     'object_date': res_book_info,
                                 }
                             )

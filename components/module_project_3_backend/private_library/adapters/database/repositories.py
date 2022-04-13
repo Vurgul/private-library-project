@@ -59,6 +59,48 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         query = select(Book).where(Book.isbn13 == isbn13)
         return self.session.execute(query).scalars().one_or_none()
 
+    def filter_by_keyword(
+        self,
+        keyword: str,
+        value
+    ) -> List[Book]:
+        if keyword == 'price_USD':
+            query = select(Book).where(Book.price_USD == value)
+            return self.session.execute(query).scalars().all()
+        if keyword == 'authors':
+            query = select(Book).where(Book.authors == value)
+            return self.session.execute(query).scalars().all()
+        if keyword == 'publisher':
+            query = select(Book).where(Book.publisher == value)
+            return self.session.execute(query).scalars().all()
+
+    def filter_by_price(self, price: float, books: List[Book]) -> List[Book]:
+        query = select(Book).where(
+            Book.price_USD == price,
+            Book in books
+        )
+        return self.session.execute(query).scalars().all()
+
+    def filter_by_authors(self, price: float, books: List[Book]) -> List[Book]:
+        query = select(Book).where(
+            Book.price_USD == price,
+            Book in books
+        )
+        return self.session.execute(query).scalars().all()
+
+    def order_by_keyword(self, keyword) -> List[Book]:
+        if keyword == 'price_USD':
+            query = (
+                select(Book).order_by(Book.price_USD)
+            )
+            return self.session.execute(query).scalars().all()
+        if keyword == 'pages':
+            query = (
+                select(Book).order_by(Book.pages)
+            )
+            return self.session.execute(query).scalars().all()
+        self.get_all()
+
 
 @component
 class JournalRepo(BooksRepo, interfaces.JournalRepo):
