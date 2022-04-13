@@ -13,7 +13,7 @@ services:
       - rabbitmq
     env_file:
       - .env
-    #docker-compose run --rm backend_module_project_3 private_library library-filling
+    #docker-compose run --rm backend_module_project_3 private_library library-filling god devil
   consumer:
     build:
       context: .

@@ -9,6 +9,8 @@ from pydantic import validate_arguments
 from . import errors, interfaces
 from .dataclasses import User, Book, Journal
 
+import requests
+
 join_points = PointCut()
 join_point = join_points.join_point
 
@@ -158,50 +160,52 @@ class UserService:
 @component
 class BookServices:
     book_repo: interfaces.BooksRepo
+    user_repo: interfaces.UsersRepo
+
+    #def take_message(self, object_date: dict):
+    #    book_info = BookInfo(**object_date)
+    #
+    #    self.add_book(book_info)
+
+    def take_message(self, tag: str):
+        URL_SEARCH = 'https://api.itbook.store/1.0/search'
+        URL_BOOKS_ISBN = 'https://api.itbook.store/1.0/books'
+        res = requests.get(f'{URL_SEARCH}/{tag}').json()
+        count_search = int(res['total'])
+
+        if count_search >= 41:
+            page_number = 5
+        else:
+            page_number = count_search // 10 + 1
+
+        for i in range(1, page_number + 1):
+            res_page = requests.get(f'{URL_SEARCH}/{tag}/{i}').json()
+            books = res_page['books']
+            for book in books:
+                isbn13 = book['isbn13']
+                book_info = requests.get(
+                    f'{URL_BOOKS_ISBN}/{isbn13}'
+                ).json()
+
+                book_info['price_USD'] = float(book_info['price'][1:])
+                print(book_info['isbn13'])
+                book_info = BookInfo(**book_info)
+                self.add_book(book_info)
+        self.send_message()
 
     @join_point
-    def take_message(self, object_date: dict):
-        print('1234567')
-        book_info = BookInfo(**object_date)
-        book = book_info.create_obj(Book)
-        self.book_repo.add(book)
-
-
-        book = Book(
-            title=object_date['title'],
-            authors=object_date['authors'],
-            publisher=object_date['publisher'],
-            language=object_date['language'],
-            isbn13=object_date['isbn13'],
-            pages=object_date['pages'],
-            year=object_date['year'],
-            rating=object_date['rating'],
-            desc=object_date['desc'],
-            price_USD=object_date['price_USD'],
-        )
-        # self.book_repo.add(book)
-
-        book_infooo = BookInfo(
-            title=object_date['title'],
-            authors=object_date['authors'],
-            publisher=object_date['publisher'],
-            language=object_date['language'],
-            isbn13=object_date['isbn13'],
-            pages=object_date['pages'],
-            year=object_date['year'],
-            rating=object_date['rating'],
-            price_USD=object_date['price_USD'],
-        )
-        #print(book)
-        #self.add_book(book_info)
-
-    @join_point
-    @validate_with_dto
     def add_book(self, book_info: BookInfo):
         if self.book_repo.get_by_isbn13(book_info.isbn13) is None:
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!")
             book = book_info.create_obj(Book)
             self.book_repo.add(book)
+
+    @join_point
+    def send_message(self):
+        print('WIN!!!!')
+        users = self.user_repo.get_all()
+        for user in users:
+            print(f'{user.login}: Топ книги для тебя ')
+
 
 
 @component

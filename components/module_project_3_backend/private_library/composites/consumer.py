@@ -17,11 +17,13 @@ class DB:
     context = TransactionContext(bind=engine)
 
     books_repo = database.repositories.BooksRepo(context=context)
+    users_repo = database.repositories.UsersRepo(context=context)
 
 
 class Application:
     books = services.BookServices(
         book_repo=DB.books_repo,
+        user_repo=DB.users_repo,
     )
 
 

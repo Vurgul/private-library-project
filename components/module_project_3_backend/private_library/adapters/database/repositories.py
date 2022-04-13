@@ -74,13 +74,13 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
             query = select(Book).where(Book.publisher == value)
             return self.session.execute(query).scalars().all()
 
-    def filter_by_price(self, price: float, books: List[Book]) -> List[Book]:
-        query = select(Book).where(
-            Book.price_USD == price,
-            Book in books
+    def filter_by_price(self, price: float, query) -> List[Book]:
+        query = query.where(
+            Book.price_USD == price
         )
-        return self.session.execute(query).scalars().all()
+        #return self.session.execute(query).scalars().all()
 
+        return query
     def filter_by_authors(self, price: float, books: List[Book]) -> List[Book]:
         query = select(Book).where(
             Book.price_USD == price,
@@ -100,6 +100,9 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
             )
             return self.session.execute(query).scalars().all()
         self.get_all()
+
+    def get_top_three(self, data: str):
+        query = select(Book).order_by(Book.rating).limit(3)
 
 
 @component

@@ -55,6 +55,7 @@ class Application:
     )
     books = services.BookServices(
         book_repo=DB.books_repo,
+        user_repo=DB.users_repo,
     )
 
 
