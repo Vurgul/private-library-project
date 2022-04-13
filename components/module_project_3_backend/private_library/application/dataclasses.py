@@ -23,6 +23,7 @@ class Book:
     year: int
     rating: float
     price_USD: float
+    tag: str
     desc: Optional[str] = None
     id: Optional[int] = None
 

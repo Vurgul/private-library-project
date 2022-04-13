@@ -47,6 +47,7 @@ class BookInfo(DTO):
     year: int
     rating: float
     price_USD: float
+    tag: str
     desc: Optional[str]
     id: Optional[int]
 
@@ -162,10 +163,6 @@ class BookServices:
     book_repo: interfaces.BooksRepo
     user_repo: interfaces.UsersRepo
 
-    #def take_message(self, object_date: dict):
-    #    book_info = BookInfo(**object_date)
-    #
-    #    self.add_book(book_info)
 
     def take_message(self, tag: str):
         URL_SEARCH = 'https://api.itbook.store/1.0/search'
@@ -188,10 +185,11 @@ class BookServices:
                 ).json()
 
                 book_info['price_USD'] = float(book_info['price'][1:])
+                book_info['tag'] = tag
                 print(book_info['isbn13'])
                 book_info = BookInfo(**book_info)
                 self.add_book(book_info)
-        self.send_message()
+        self.send_message(tag)
 
     @join_point
     def add_book(self, book_info: BookInfo):
@@ -200,12 +198,13 @@ class BookServices:
             self.book_repo.add(book)
 
     @join_point
-    def send_message(self):
-        print('WIN!!!!')
+    def send_message(self, tag: str):
         users = self.user_repo.get_all()
         for user in users:
-            print(f'{user.login}: Топ книги для тебя ')
-
+            books = self.book_repo.get_top_three(tag)
+            print('-----------')
+            print(f'{user.login}, книги для тебя: {books}')
+            print('-----------')
 
 
 @component

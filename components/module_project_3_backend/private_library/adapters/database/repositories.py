@@ -3,6 +3,7 @@ from typing import Optional, List
 from evraz.classic.components import component
 from evraz.classic.sql_storage import BaseRepository
 from sqlalchemy import select
+from sqlalchemy import desc
 from private_library.application import interfaces
 from private_library.application.dataclasses import User, Book, Journal
 
@@ -101,9 +102,11 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
             return self.session.execute(query).scalars().all()
         self.get_all()
 
-    def get_top_three(self, data: str):
-        query = select(Book).order_by(Book.rating).limit(3)
-
+    def get_top_three(self, tag: str) -> List[Book]:
+        query = select(Book).where(Book.tag == tag)
+        query = query.order_by(desc(Book.rating))
+        query = query.order_by(Book.year).limit(3)
+        return self.session.execute(query).scalars().all()
 
 @component
 class JournalRepo(BooksRepo, interfaces.JournalRepo):

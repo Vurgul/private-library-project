@@ -58,6 +58,9 @@ class BooksRepo(ABC):
     @abstractmethod
     def order_by_keyword(self, keyword) -> List[Book]: ...
 
+    @abstractmethod
+    def get_top_three(self, tag: str) -> List[Book]: ...
+
 
 class JournalRepo(ABC):
 
