@@ -6,7 +6,6 @@ from . import controllers, auth
 
 
 def create_app(
-    users: services.UserService,
     authorization: services.Authorization,
     library: services.Library,
 ) -> App:
@@ -15,11 +14,6 @@ def create_app(
     authenticator.set_strategies(auth.jwt_strategy)
 
     app = App()
-    app.register(controllers.Users(
-        authenticator=authenticator,
-        users=users
-        )
-    )
 
     app.register(controllers.Authorization(
         authorization=authorization

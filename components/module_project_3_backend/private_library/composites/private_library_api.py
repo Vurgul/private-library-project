@@ -43,11 +43,6 @@ class Application:
     authorization = services.Authorization(
         user_repo=DB.users_repo,
     )
-
-    users = services.UserService(
-        user_repo=DB.users_repo,
-        publisher=MessageBus.publisher,
-    )
     library = services.Library(
         user_repo=DB.users_repo,
         book_repo=DB.books_repo,
@@ -66,7 +61,6 @@ class Aspects:
 
 app = private_library_api.create_app(
     authorization=Application.authorization,
-    users=Application.users,
     library=Application.library,
 )
 

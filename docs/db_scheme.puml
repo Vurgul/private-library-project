@@ -1,0 +1,45 @@
+@startuml
+header Демо проект
+title Схема БД
+
+hide circle
+
+entity users {
+  * **id**  :  int
+  __
+  **name**  :  varchar
+  **age**  : int
+  **login**  :  varchar
+  **password**  :  varchar
+}
+
+entity books {
+  * **id**  :  int
+  __
+  **title**  :  varchar
+  **authors**  :  varchar
+  **publisher**  :  varchar
+  **language**  :  varchar
+  **isbn13**  :  varchar
+  **pages**'  :  int
+  **year**  :  int
+  **rating**  :  float
+  **desc**  :  text
+  **price_USD**  :  float
+  **tag**  :  varchar
+}
+
+entity journal {
+  * **id**  :  int
+  __
+  * **user_id**  :  int
+  * **book_id**  :  int
+  **action**  :  varchar
+  **taking_date**  :  date
+  **timedelta**  :  interval
+  **returning_date**  :  date
+}
+
+users --o{ journal
+books --o{ journal
+@enduml

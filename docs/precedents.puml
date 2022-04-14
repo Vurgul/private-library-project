@@ -1,0 +1,49 @@
+@startuml
+
+header Демо проект "частная библиотека"
+title Диаграмма прецедентов
+
+left to right direction
+
+rectangle "Авторизация" {
+  usecase "Регистрация" as registration
+  usecase "Аутентификация" as authentication
+}
+
+
+rectangle "Библиотека" {
+  usecase "Получить список книг" as get_books
+  usecase "Отфильтровать список книг на получение" as get_filter_books
+  usecase "Получить информацию о книге" as get_book_info
+  usecase "Получить список ранее взятых книг" as get_journal
+  usecase "Получить данные о активной книге" as get_active_book
+  usecase "Забронировать книгу на промежуток времени" as reserve_book
+  usecase "Закрыть бронь книги" as return_book
+  usecase "Выкупить книгу" as buy_book
+  usecase "Посмотреть список пользователь библиотекой" as get_users
+}
+
+rectangle "Книги" {
+  usecase "Заполнение библиотеки" as filling_library
+}
+
+actor "Анонимный пользователь" as anon_user
+anon_user -- registration
+anon_user -- authentication
+
+actor "Админ" as admin
+admin -- filling_library
+
+actor "Пользователь" as user
+user -- get_books
+user -- get_filter_books
+user -- get_book_info
+user -- get_journal
+user -- get_active_book
+user -- reserve_book
+user -- return_book
+user -- buy_book
+user -- get_users
+
+
+@enduml
