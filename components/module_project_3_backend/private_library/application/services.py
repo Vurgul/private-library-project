@@ -10,6 +10,7 @@ from . import errors, interfaces
 from .dataclasses import User, Book, Journal
 
 import requests
+from datetime import datetime
 
 join_points = PointCut()
 join_point = join_points.join_point
@@ -35,6 +36,16 @@ class JournalReload(DTO):
     user_id: int
     book_id: int
     id: Optional[int]
+
+
+class JournalInfo(DTO):
+    user_id: int
+    book_id: int
+    action: str
+    id: Optional[int]
+    timedelta: Optional[datetime]
+    taking_date: Optional[datetime]
+    returning_date: Optional[datetime]
 
 
 class BookInfo(DTO):
@@ -266,13 +277,34 @@ class Library:
 
     @join_point
     @validate_arguments
-    def open_reserve_book(self, user_id: int, book_id: int):
-        journal_records = self.journal_repo.get_by_book_id(book_id)
+    def open_reserve_book(self, user_id: int, book_id: int, timedelta=7):
 
+        book = self.take_book_info(book_id)
+
+        journal_records = self.take_self_journal(user_id)
         for journal_record in journal_records:
-            if journal_record.action != 'return':
+            if journal_record.action == 'take':
+                raise errors.HaveActiveBook(id=journal_record.book_id)
+
+        journal_records = self.journal_repo.get_by_book_id(book.id)
+        for journal_record in journal_records:
+            if journal_record.action == 'take':
                 raise errors.BookBusy(id=book_id)
 
+        journal_info = JournalInfo(
+            user_id=user_id,
+            book_id=book_id,
+            action='take',
+            timedelta=timedelta,
+        )
+        self.create_journal_record(**journal_info.dict())
+
+    @join_point
+    @validate_with_dto
+    def create_journal_record(self, journal_info: JournalInfo):
+        journal_record = journal_info.create_obj(Journal)
+        self.journal_repo.add(journal_record)
+        #return journal_record
 
     @join_point
     @validate_arguments
@@ -283,5 +315,10 @@ class Library:
     @validate_arguments
     def buy_book(self):
         pass
+
+    @join_point
+    def get_all_j(self):
+        j = self.journal_repo.get_all()
+        return j
 
 

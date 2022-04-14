@@ -34,5 +34,6 @@ class Journal:
     book_id: int
     action: str
     id: Optional[int] = None
+    timedelta: Optional[datetime] = None
     taking_date: Optional[datetime] = None
     returning_date: Optional[datetime] = None

@@ -50,10 +50,5 @@ journal = Table(
     Column('action', String(128), nullable=False),
     Column('taking_date', DateTime, nullable=False, default=datetime.utcnow()),
     Column('timedelta', DateTime, nullable=False, default=timedelta(days=7)),
-    Column(
-        'returning_date',
-        DateTime,
-        nullable=True,
-        default=datetime.utcnow()
-    ),
+    Column('returning_date', DateTime, nullable=True, default=None),
 )

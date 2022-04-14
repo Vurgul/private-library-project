@@ -16,6 +16,11 @@ class NoJournal(AppError):
     code = 'journal.no_active_book'
 
 
+class HaveActiveBook(AppError):
+    msg_template = 'You can take just one book. Your active book {id}'
+    code = 'journal.have_active_book'
+
+
 class BookBusy(AppError):
     msg_template = 'Book with id {id} busy'
     code = 'book.book_busy'

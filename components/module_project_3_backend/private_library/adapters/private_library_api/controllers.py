@@ -89,16 +89,14 @@ class Library:
     def on_get_books(self, request, response):
         """Получить информацию о всех книгах"""
         books = self.library.take_books_info()
-        print(books)
         response.media = [asdict(book) for book in books]
 
     @join_point
     def on_get_books_filter(self, request, response):
-        """Получить информацию о всех книгах"""
+        """Получить информацию о всех книгах с использованием фильтрации"""
         books = self.library.take_books_with_filter_and_sort(
             **request.params
         )
-        print(books)
         response.media = [asdict(book) for book in books]
 
     @join_point
@@ -124,6 +122,10 @@ class Library:
     @authenticate
     def on_post_reserve_book(self, request, response):
         """Забронировать книгу"""
+        self.library.open_reserve_book(
+            user_id=request.context.client.user_id,
+            **request.media
+        )
 
     @join_point
     @authenticate
@@ -134,3 +136,9 @@ class Library:
     @authenticate
     def on_post_buy_book(self, request, response):
         """Выкупить книгу"""
+
+    @join_point
+    def on_get_j(self, request, response):
+        # TODO: НЕЗАБЫТЬ ИЗМЕНИТЬ / УДАЛИТЬ
+        js = self.library.get_all_j()
+        response.media = [j.user_id for j in js]
