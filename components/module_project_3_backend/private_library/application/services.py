@@ -10,7 +10,7 @@ from . import errors, interfaces
 from .dataclasses import User, Book, Journal
 
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 join_points = PointCut()
 join_point = join_points.join_point
@@ -33,9 +33,8 @@ class UserUpDateInfo(DTO):
 
 
 class JournalReload(DTO):
-    user_id: int
-    book_id: int
-    id: Optional[int]
+    returning_date: Optional[datetime]
+    action: str
 
 
 class JournalInfo(DTO):
@@ -43,8 +42,8 @@ class JournalInfo(DTO):
     book_id: int
     action: str
     id: Optional[int]
-    timedelta: Optional[datetime]
     taking_date: Optional[datetime]
+    timedelta: Optional[timedelta]
     returning_date: Optional[datetime]
 
 
@@ -175,28 +174,24 @@ class BookServices:
     user_repo: interfaces.UsersRepo
 
     def take_message(self, tag: str):
-        URL_SEARCH = 'https://api.itbook.store/1.0/search'
-        URL_BOOKS_ISBN = 'https://api.itbook.store/1.0/books'
-        res = requests.get(f'{URL_SEARCH}/{tag}').json()
-        count_search = int(res['total'])
+        url_search = 'https://api.itbook.store/1.0/search'
+        url_books_isbn = 'https://api.itbook.store/1.0/books'
+        res = requests.get(f'{url_search}/{tag}').json()
+        count_search_result = int(res['total'])
 
-        if count_search >= 41:
+        if count_search_result >= 41:
             page_number = 5
         else:
-            page_number = count_search // 10 + 1
+            page_number = count_search_result // 10 + 1
 
-        for i in range(1, page_number + 1):
-            res_page = requests.get(f'{URL_SEARCH}/{tag}/{i}').json()
+        for i in range(1, page_number+1):
+            res_page = requests.get(f'{url_search}/{tag}/{i}').json()
             books = res_page['books']
             for book in books:
                 isbn13 = book['isbn13']
-                book_info = requests.get(
-                    f'{URL_BOOKS_ISBN}/{isbn13}'
-                ).json()
-
+                book_info = requests.get(f'{url_books_isbn}/{isbn13}').json()
                 book_info['price_USD'] = float(book_info['price'][1:])
                 book_info['tag'] = tag
-                print(book_info['isbn13'])
                 book_info = BookInfo(**book_info)
                 self.add_book(book_info)
         self.send_message(tag)
@@ -231,13 +226,21 @@ class Library:
 
     @join_point
     @validate_with_dto
-    def take_books_with_filter_and_sort(self, filter_date: FilterBook) -> List[Book]:
+    def take_books_with_filter_and_sort(
+        self, filter_date: FilterBook
+    ) -> List[Book]:
 
         books = self.book_repo.get_query()
         if filter_date.price_USD is not None:
-            books = self.book_repo.filter_by_price(filter_date.price_USD, books)
+            books = self.book_repo.filter_by_price(
+                filter_date.price_USD,
+                books,
+            )
         if filter_date.publisher is not None:
-            books = self.book_repo.filter_by_publisher(filter_date.publisher, books)
+            books = self.book_repo.filter_by_publisher(
+                filter_date.publisher,
+                books
+            )
         if filter_date.authors is not None:
             books = self.book_repo.filter_by_authors(filter_date.authors, books)
         if filter_date.keyword is not None:
@@ -250,14 +253,12 @@ class Library:
 
         return books
 
-
     @join_point
     @validate_arguments
     def take_book_info(self, book_id: int) -> Book:
         book = self.book_repo.get_by_id(book_id)
         if book is None:
             raise errors.NoBook(id=book_id)
-
         return book
 
     @join_point
@@ -270,15 +271,14 @@ class Library:
     @validate_arguments
     def take_active_book(self, user_id: int) -> Book:
         journal_record = self.journal_repo.get_active_record(user_id)
-        if journal_record in None:
+        if journal_record is None:
             raise errors.NoJournal(id=user_id)
         book = self.take_book_info(journal_record.book_id)
         return book
 
     @join_point
     @validate_arguments
-    def open_reserve_book(self, user_id: int, book_id: int, timedelta=7):
-
+    def open_reserve_book(self, user_id: int, book_id: int, time_delta=7):
         book = self.take_book_info(book_id)
 
         journal_records = self.take_self_journal(user_id)
@@ -290,12 +290,14 @@ class Library:
         for journal_record in journal_records:
             if journal_record.action == 'take':
                 raise errors.BookBusy(id=book_id)
+            if journal_record.action == 'buy':
+                raise errors.BookBuy(id=book_id)
 
         journal_info = JournalInfo(
             user_id=user_id,
             book_id=book_id,
             action='take',
-            timedelta=timedelta,
+            timedelta=timedelta(days=time_delta),
         )
         self.create_journal_record(**journal_info.dict())
 
@@ -304,17 +306,34 @@ class Library:
     def create_journal_record(self, journal_info: JournalInfo):
         journal_record = journal_info.create_obj(Journal)
         self.journal_repo.add(journal_record)
-        #return journal_record
 
     @join_point
     @validate_arguments
-    def close_reserve_book(self):
-        pass
+    def close_reserve_book(self, user_id: int):
+        journal_record = self._validate_journal_record_take_book_exists(user_id)
+
+        modern_journal_record = JournalReload(
+            returning_date=datetime.utcnow(),
+            action='return'
+        )
+        modern_journal_record.populate_obj(journal_record)
 
     @join_point
     @validate_arguments
-    def buy_book(self):
-        pass
+    def buy_book(self, user_id: int):
+        journal_record = self._validate_journal_record_take_book_exists(user_id)
+
+        modern_journal_record = JournalReload(action='buy')
+        modern_journal_record.populate_obj(journal_record)
+
+    def _validate_journal_record_take_book_exists(
+        self, user_id: int
+    ) -> Optional[Journal]:
+
+        journal_record = self.journal_repo.get_active_record(user_id)
+        if journal_record is None:
+            raise errors.NoJournal(id=user_id)
+        return journal_record
 
     @join_point
     def get_all_j(self):

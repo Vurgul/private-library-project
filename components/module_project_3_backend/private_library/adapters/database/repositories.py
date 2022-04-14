@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy import desc
 from private_library.application import interfaces
 from private_library.application.dataclasses import User, Book, Journal
-
+from datetime import datetime
 
 @component
 class UsersRepo(BaseRepository, interfaces.UsersRepo):
@@ -60,21 +60,6 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         query = select(Book).where(Book.isbn13 == isbn13)
         return self.session.execute(query).scalars().one_or_none()
 
-    def filter_by_keywords(
-        self,
-        keyword: str,
-        value
-    ) -> List[Book]:
-        if keyword == 'price_USD':
-            query = select(Book).where(Book.price_USD == value)
-            return self.session.execute(query).scalars().all()
-        if keyword == 'authors':
-            query = select(Book).where(Book.authors == value)
-            return self.session.execute(query).scalars().all()
-        if keyword == 'publisher':
-            query = select(Book).where(Book.publisher == value)
-            return self.session.execute(query).scalars().all()
-
     def filter_by_price(self, price: str, query):
         if 'gte:' in price:
             price = float(price[4:])
@@ -114,7 +99,7 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         )
         return query
 
-    def order_by(self, column, query):
+    def order_by(self, column: str, query):
         if column == 'price_USD':
             query = (
                 query.order_by(Book.price_USD)
@@ -140,11 +125,12 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
 
 
 @component
-class JournalRepo(BooksRepo, interfaces.JournalRepo):
+class JournalRepo(BaseRepository, interfaces.JournalRepo):
 
     def get_by_id(self, id: int) -> Optional[Journal]:
         query = select(Journal).where(Journal.id == id)
-        return self.session.execute(query).scalars().one_or_none()
+        result = self.session.execute(query).scalars().one_or_none()
+        return self._parse_date(result)
 
     def add(self, journal: Journal):
         self.session.add(journal)
@@ -155,19 +141,40 @@ class JournalRepo(BooksRepo, interfaces.JournalRepo):
 
     def get_all(self) -> List[Journal]:
         query = select(Journal)
-        return self.session.execute(query).scalars().all()
+        results = self.session.execute(query).scalars().all()
+        return list(map(self._parse_date, results))
 
     def get_by_user_id(self, user_id: int) -> List[Journal]:
         query = select(Journal).where(Journal.user_id == user_id)
-        return self.session.execute(query).scalars().all()
+        results = self.session.execute(query).scalars().all()
+        return list(map(self._parse_date, results))
 
     def get_by_book_id(self, book_id: int) -> List[Journal]:
         query = select(Journal).where(Journal.book_id == book_id)
-        return self.session.execute(query).scalars().all()
+        results = self.session.execute(query).scalars().all()
+        return list(map(self._parse_date, results))
 
     def get_active_record(self, user_id: int) -> Optional[Journal]:
         query = select(Journal).where(
             Journal.action == 'take',
             Journal.user_id == user_id
         )
-        return self.session.execute(query).scalars().one_or_none()
+        result = self.session.execute(query).scalars().one_or_none()
+        return self._parse_date(result)
+
+    @classmethod
+    def _parse_date(cls, journal: Journal) -> Journal:
+        if journal is not None:
+            if isinstance(journal.taking_date, datetime):
+                journal.taking_date = journal.taking_date.strftime(
+                    '%Y-%m-%d %H:%M:%S'
+                )
+
+            if journal.timedelta is not None:
+                journal.timedelta = str(journal.timedelta)
+
+            if isinstance(journal.returning_date, datetime):
+                journal.returning_date = journal.returning_date.strftime(
+                    '%Y-%m-%d %H:%M:%S'
+                )
+        return journal

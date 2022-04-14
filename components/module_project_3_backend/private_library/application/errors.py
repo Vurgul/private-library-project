@@ -26,6 +26,11 @@ class BookBusy(AppError):
     code = 'book.book_busy'
 
 
+class BookBuy(AppError):
+    msg_template = 'Book with id {id} buy'
+    code = 'book.book_buy'
+
+
 class NotUniqueLogin(AppError):
     msg_template = 'User with login {login} exists'
     code = 'user.not_unique_login'

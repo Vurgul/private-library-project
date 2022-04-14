@@ -50,6 +50,7 @@ class Users:
     def on_get_users(self, request, response):
         """Получить информацию о всех пользователях"""
         users = self.users.get_users_info()
+
         response.media = [asdict(user) for user in users]
 
 
@@ -92,6 +93,7 @@ class Library:
         response.media = [asdict(book) for book in books]
 
     @join_point
+    @authenticate
     def on_get_books_filter(self, request, response):
         """Получить информацию о всех книгах с использованием фильтрации"""
         books = self.library.take_books_with_filter_and_sort(
@@ -112,11 +114,20 @@ class Library:
     @authenticate
     def on_get_journal(self, request, response):
         """Получить список ранее взятых книг"""
+        journal_records = self.library.take_self_journal(
+            user_id=request.context.client.user_id
+        )
+        response.media = [asdict(record) for record in journal_records]
 
     @join_point
     @authenticate
     def on_get_active_book(self, request, response):
         """Получить активную книгу"""
+        book = self.library.take_active_book(
+            user_id=request.context.client.user_id
+        )
+        response.media = asdict(book)
+
 
     @join_point
     @authenticate
@@ -124,21 +135,29 @@ class Library:
         """Забронировать книгу"""
         self.library.open_reserve_book(
             user_id=request.context.client.user_id,
-            **request.media
+            **request.media,
         )
 
     @join_point
     @authenticate
     def on_post_return_book(self, request, response):
         """Вернуть книгу"""
+        self.library.close_reserve_book(
+            user_id=request.context.client.user_id,
+            **request.media
+        )
 
     @join_point
     @authenticate
     def on_post_buy_book(self, request, response):
         """Выкупить книгу"""
+        self.library.buy_book(
+            user_id=request.context.client.user_id,
+            **request.media
+        )
 
     @join_point
     def on_get_j(self, request, response):
         # TODO: НЕЗАБЫТЬ ИЗМЕНИТЬ / УДАЛИТЬ
         js = self.library.get_all_j()
-        response.media = [j.user_id for j in js]
+        response.media = [asdict(j) for j in js]
