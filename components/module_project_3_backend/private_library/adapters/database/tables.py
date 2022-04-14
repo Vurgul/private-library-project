@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy import (Column, Integer, MetaData,
                         String, Table, Float, ForeignKey, DateTime
@@ -49,6 +49,7 @@ journal = Table(
     Column('book_id', ForeignKey('books.id'), nullable=False),
     Column('action', String(128), nullable=False),
     Column('taking_date', DateTime, nullable=False, default=datetime.utcnow()),
+    Column('timedelta', DateTime, nullable=False, default=timedelta(days=7)),
     Column(
         'returning_date',
         DateTime,

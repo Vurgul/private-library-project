@@ -93,6 +93,15 @@ class Library:
         response.media = [asdict(book) for book in books]
 
     @join_point
+    def on_get_books_filter(self, request, response):
+        """Получить информацию о всех книгах"""
+        books = self.library.take_books_with_filter_and_sort(
+            **request.params
+        )
+        print(books)
+        response.media = [asdict(book) for book in books]
+
+    @join_point
     @authenticate
     def on_get_book(self, request, response):
         """Получить информацию о книге"""

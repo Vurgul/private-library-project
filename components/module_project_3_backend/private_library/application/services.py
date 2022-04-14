@@ -53,7 +53,7 @@ class BookInfo(DTO):
 
 
 class FilterBook(DTO):
-    price_USD: Optional[float]
+    price_USD: Optional[str]
     keyword: Optional[str]
     authors: Optional[str]
     publisher: Optional[str]
@@ -163,7 +163,6 @@ class BookServices:
     book_repo: interfaces.BooksRepo
     user_repo: interfaces.UsersRepo
 
-
     def take_message(self, tag: str):
         URL_SEARCH = 'https://api.itbook.store/1.0/search'
         URL_BOOKS_ISBN = 'https://api.itbook.store/1.0/books'
@@ -203,7 +202,7 @@ class BookServices:
         for user in users:
             books = self.book_repo.get_top_three(tag)
             print('-----------')
-            print(f'{user.login}, книги для тебя: {books}')
+            print(f'{user.login}, книги  по теме {tag} для тебя: {books}')
             print('-----------')
 
 
@@ -222,7 +221,21 @@ class Library:
     @join_point
     @validate_with_dto
     def take_books_with_filter_and_sort(self, filter_date: FilterBook) -> List[Book]:
-        books = self.book_repo.get_all()
+
+        books = self.book_repo.get_query()
+        if filter_date.price_USD is not None:
+            books = self.book_repo.filter_by_price(filter_date.price_USD, books)
+        if filter_date.publisher is not None:
+            books = self.book_repo.filter_by_publisher(filter_date.publisher, books)
+        if filter_date.authors is not None:
+            books = self.book_repo.filter_by_authors(filter_date.authors, books)
+        if filter_date.keyword is not None:
+            books = self.book_repo.filter_by_keyword(filter_date.keyword, books)
+
+        if filter_date.order_by is not None:
+            books = self.book_repo.order_by(filter_date.order_by, books)
+
+        books = self.book_repo.get_filter_data(books)
 
         return books
 
