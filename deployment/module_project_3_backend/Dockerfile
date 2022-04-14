@@ -2,8 +2,8 @@ FROM python:3.7-slim
 
 WORKDIR /app
 
-COPY components/module_project_3_backend/setup.cfg .
-COPY components/module_project_3_backend/setup.py .
+COPY ./components/module_project_3_backend/setup.cfg .
+COPY ./components/module_project_3_backend/setup.py .
 COPY dist ./dist/
 
 

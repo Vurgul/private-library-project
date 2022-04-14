@@ -4,7 +4,7 @@ services:
   backend_module_project_3:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: deployment/module_project_3_backend/Dockerfile
     ports:
       - "1111:1111"
     restart: unless-stopped
@@ -12,18 +12,18 @@ services:
       - db
       - rabbitmq
     env_file:
-      - .env
-    #docker-compose run --rm backend_module_project_3 private_library library-filling god devil
+      - deployment/module_project_3_backend/.env
+    # docker-compose run --rm backend_module_project_3 private_library library-filling god devil
   consumer:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: deployment/module_project_3_backend/Dockerfile
     restart: unless-stopped
     depends_on:
       - db
       - rabbitmq
     env_file:
-      - .env
+      - deployment/module_project_3_backend/.env
     entrypoint: ['python', '-m', 'components.module_project_3_backend.private_library.composites.consumer']
 
 
@@ -36,7 +36,7 @@ services:
     volumes:
       - ./volumes/db
     env_file:
-        - .env
+        - deployment/module_project_3_backend/.env
 
   nginx:
     image: nginx:1.21.6
