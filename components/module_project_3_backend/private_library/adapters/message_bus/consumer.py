@@ -1,6 +1,6 @@
 from evraz.classic.messaging_kombu import KombuConsumer
-from private_library.application import services
 from kombu import Connection
+from private_library.application import services
 
 from .scheme import broker_scheme
 

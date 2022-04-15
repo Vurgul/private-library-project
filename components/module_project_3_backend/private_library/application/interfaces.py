@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Optional, List
+from typing import List, Optional
 
-from .dataclasses import User, Book, Journal
+from .dataclasses import Book, Journal, User
 
 
 class UsersRepo(ABC):

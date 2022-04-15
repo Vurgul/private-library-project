@@ -2,7 +2,7 @@ from evraz.classic.http_api import App
 from evraz.classic.http_auth import Authenticator
 from private_library.application import services
 
-from . import controllers, auth
+from . import auth, controllers
 
 
 def create_app(

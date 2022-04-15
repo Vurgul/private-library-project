@@ -1,7 +1,8 @@
+from unittest.mock import Mock
+
 import pytest
 from private_library.application import errors
 from private_library.application.services import BookServices
-from unittest.mock import Mock
 
 data_book = {
     'id': 3,

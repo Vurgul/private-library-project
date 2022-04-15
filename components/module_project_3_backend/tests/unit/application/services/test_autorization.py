@@ -1,7 +1,8 @@
+from unittest.mock import Mock
+
 import pytest
 from private_library.application import errors
 from private_library.application.services import Authorization
-from unittest.mock import Mock
 
 data_user = {
     'id': 3,

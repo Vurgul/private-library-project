@@ -1,13 +1,12 @@
-from typing import Optional, List
+from datetime import datetime
+from typing import List, Optional
 
 from evraz.classic.components import component
 from evraz.classic.sql_storage import BaseRepository
-from sqlalchemy import select
-from sqlalchemy import desc
-from sqlalchemy import or_
 from private_library.application import interfaces
-from private_library.application.dataclasses import User, Book, Journal
-from datetime import datetime
+from private_library.application.dataclasses import Book, Journal, User
+from sqlalchemy import desc, or_, select
+
 
 @component
 class UsersRepo(BaseRepository, interfaces.UsersRepo):

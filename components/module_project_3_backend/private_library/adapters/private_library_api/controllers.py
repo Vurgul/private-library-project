@@ -1,8 +1,9 @@
 import jwt
 from attr import asdict
 from evraz.classic.components import component
-from private_library.application import services
 from evraz.classic.http_auth import authenticate, authenticator_needed
+from private_library.application import services
+
 from .join_points import join_point
 
 

@@ -1,5 +1,5 @@
-from sqlalchemy.orm import registry, relationship
 from private_library.application import dataclasses
+from sqlalchemy.orm import registry, relationship
 
 from . import tables
 

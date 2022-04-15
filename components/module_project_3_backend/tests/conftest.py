@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
+
 import pytest
 from private_library.application import dataclasses
-from datetime import datetime, timedelta
 
 
 @pytest.fixture(scope='function')

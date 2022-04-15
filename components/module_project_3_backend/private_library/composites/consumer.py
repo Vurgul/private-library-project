@@ -1,8 +1,8 @@
 from evraz.classic.sql_storage import TransactionContext
 from kombu import Connection
-from sqlalchemy import create_engine
 from private_library.adapters import database, message_bus, private_library_api
 from private_library.application import services
+from sqlalchemy import create_engine
 
 
 class Settings:
