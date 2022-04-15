@@ -4,6 +4,7 @@ from evraz.classic.components import component
 from evraz.classic.sql_storage import BaseRepository
 from sqlalchemy import select
 from sqlalchemy import desc
+from sqlalchemy import or_
 from private_library.application import interfaces
 from private_library.application.dataclasses import User, Book, Journal
 from datetime import datetime
@@ -95,7 +96,11 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
 
     def filter_by_keyword(self, keyword: str, query):
         query = query.where(
-            Book.desc.ilike(f'%{keyword}%')
+            or_(
+                Book.desc.ilike(f'%{keyword}%'),
+                Book.subtitle.ilike(f'%{keyword}%')
+            )
+
         )
         return query
 
@@ -156,7 +161,7 @@ class JournalRepo(BaseRepository, interfaces.JournalRepo):
 
     def get_active_record(self, user_id: int) -> Optional[Journal]:
         query = select(Journal).where(
-            Journal.action == 'take',
+            Journal.status == 'take',
             Journal.user_id == user_id
         )
         result = self.session.execute(query).scalars().one_or_none()

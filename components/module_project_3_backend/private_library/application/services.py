@@ -33,13 +33,13 @@ class UserUpDateInfo(DTO):
 
 class JournalReload(DTO):
     returning_date: Optional[datetime]
-    action: str
+    status: str
 
 
 class JournalInfo(DTO):
     user_id: int
     book_id: int
-    action: str
+    status: str
     id: Optional[int]
     taking_date: Optional[datetime]
     timedelta: Optional[timedelta]
@@ -47,7 +47,9 @@ class JournalInfo(DTO):
 
 
 class BookInfo(DTO):
+    id: Optional[int]
     title: str
+    subtitle: str
     authors: str
     publisher: str
     language: str
@@ -56,9 +58,8 @@ class BookInfo(DTO):
     year: int
     rating: float
     price_USD: float
-    tag: str
     desc: Optional[str]
-    id: Optional[int]
+    tag: str
 
 
 class FilterBook(DTO):
@@ -219,20 +220,20 @@ class Library:
 
         journal_records = self.take_self_journal(user_id)
         for journal_record in journal_records:
-            if journal_record.action == 'take':
+            if journal_record.status == 'take':
                 raise errors.HaveActiveBook(id=journal_record.book_id)
 
         journal_records = self.journal_repo.get_by_book_id(book.id)
         for journal_record in journal_records:
-            if journal_record.action == 'take':
+            if journal_record.status == 'take':
                 raise errors.BookBusy(id=book_id)
-            if journal_record.action == 'buy':
+            if journal_record.status == 'buy':
                 raise errors.BookBuy(id=book_id)
 
         journal_info = JournalInfo(
             user_id=user_id,
             book_id=book_id,
-            action='take',
+            status='take',
             timedelta=timedelta(days=time_delta),
         )
         self.create_journal_record(**journal_info.dict())
@@ -250,7 +251,7 @@ class Library:
 
         modern_journal_record = JournalReload(
             returning_date=datetime.utcnow(),
-            action='return'
+            status='return'
         )
         modern_journal_record.populate_obj(journal_record)
 
@@ -259,7 +260,7 @@ class Library:
     def buy_book(self, user_id: int):
         journal_record = self._validate_journal_record_take_book_exists(user_id)
 
-        modern_journal_record = JournalReload(action='buy')
+        modern_journal_record = JournalReload(status='buy')
         modern_journal_record.populate_obj(journal_record)
 
     def _validate_journal_record_take_book_exists(

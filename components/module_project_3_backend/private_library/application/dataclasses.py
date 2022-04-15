@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 import attr
 
 
@@ -24,16 +24,17 @@ class Book:
     rating: float
     price_USD: float
     tag: str
-    desc: Optional[str] = None
     id: Optional[int] = None
+    subtitle: Optional[str] = None
+    desc: Optional[str] = None
 
 
 @attr.dataclass
 class Journal:
     user_id: int
     book_id: int
-    action: str
+    status: str
     id: Optional[int] = None
-    timedelta: Optional[datetime] = None
+    timedelta: Optional[timedelta] = None
     taking_date: Optional[datetime] = None
     returning_date: Optional[datetime] = None

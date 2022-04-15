@@ -2,13 +2,6 @@
 header Демо проект "частная библиотека"
 title Диаграмма компонентов
 
-node "Nginx server" {
-() "nginx"
-}
-
-() "REST API" as REST_API
-
-nginx -- REST_API: http
 
 node "BackendServes"{
     component "Private library" as PL
@@ -23,7 +16,7 @@ node "RabbitServer"{
     component "RabbitMQ"  as RMQ
 }
 
-component "Library_API"  as LAPI
+() "Library_API"  as LAPI
 
 RMQ -- consumer
 PL --( library_repositories
@@ -31,6 +24,5 @@ PSQL -- library_repositories
 PL --( library_publisher
 library_publisher --> RMQ: cli
 LAPI -- PL : have
-REST_API -- LAPI : http
 
 @enduml
