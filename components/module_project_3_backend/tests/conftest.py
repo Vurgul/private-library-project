@@ -26,6 +26,17 @@ def user_2():
 
 
 @pytest.fixture(scope='function')
+def user_3():
+    return dataclasses.User(
+        id=3,
+        name='test_name_3',
+        age=3,
+        login='test_login_3',
+        password='test_password_3'
+    )
+
+
+@pytest.fixture(scope='function')
 def book_1():
     return dataclasses.Book(
         id=1,
