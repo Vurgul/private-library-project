@@ -68,7 +68,7 @@ class Library:
     def on_get_book(self, request, response):
         """Получить информацию о книге"""
         book = self.library.take_book_info(
-            **request.media
+            **request.params
         )
         response.media = asdict(book)
 
@@ -120,6 +120,6 @@ class Library:
 
     @join_point
     def on_get_j(self, request, response):
-        # TODO: НЕЗАБЫТЬ ИЗМЕНИТЬ / УДАЛИТЬ
+        # TODO: НЕ ЗАБЫТЬ ИЗМЕНИТЬ / УДАЛИТЬ
         js = self.library.get_all_j()
         response.media = [asdict(j) for j in js]
