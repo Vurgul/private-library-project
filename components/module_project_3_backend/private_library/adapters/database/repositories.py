@@ -23,9 +23,6 @@ class UsersRepo(BaseRepository, interfaces.UsersRepo):
         query = select(User)
         return self.session.execute(query).scalars().all()
 
-    def remove(self, user: User):
-        self.session.delete(user)
-
     def get_by_user_data(self, login: str, password: str) -> Optional[User]:
         query = select(User).where(
             User.login == login,
@@ -49,9 +46,6 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         self.session.add(book)
         self.session.flush()
 
-    def remove(self, book: Book):
-        self.session.delete(book)
-
     def get_all(self) -> List[Book]:
         query = select(Book)
         return self.session.execute(query).scalars().all()
@@ -60,7 +54,7 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         query = select(Book).where(Book.isbn13 == isbn13)
         return self.session.execute(query).scalars().one_or_none()
 
-    def filter_by_price(self, price: str, query):
+    def filter_by_price(self, price: str, query: object) -> object:
         if 'gte:' in price:
             price = float(price[4:])
             query = query.where(
@@ -81,19 +75,19 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
                 pass
         return query
 
-    def filter_by_authors(self, authors: str, query) -> List[Book]:
+    def filter_by_authors(self, authors: str, query: object) -> List[Book]:
         query = query.where(
             Book.authors.ilike(f'%{authors}%')
         )
         return query
 
-    def filter_by_publisher(self, publisher: str, query):
+    def filter_by_publisher(self, publisher: str, query: object) -> object:
         query = query.where(
             Book.publisher.ilike(f'%{publisher}%')
         )
         return query
 
-    def filter_by_keyword(self, keyword: str, query):
+    def filter_by_keyword(self, keyword: str, query: object) -> object:
         query = query.where(
             or_(
                 Book.desc.ilike(f'%{keyword}%'),
@@ -103,7 +97,7 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         )
         return query
 
-    def order_by(self, column: str, query):
+    def order_by(self, column: str, query: object) -> object:
         if column == 'price_USD':
             query = (
                 query.order_by(Book.price_USD)
@@ -120,11 +114,11 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         query = query.order_by(Book.year).limit(3)
         return self.session.execute(query).scalars().all()
 
-    def get_query(self):
+    def get_query(self) -> object:
         query = select(Book)
         return query
 
-    def get_filter_data(self, query) -> List[Book]:
+    def get_filter_data(self, query: object) -> List[Book]:
         return self.session.execute(query).scalars().all()
 
 
@@ -139,9 +133,6 @@ class JournalRepo(BaseRepository, interfaces.JournalRepo):
     def add(self, journal: Journal):
         self.session.add(journal)
         self.session.flush()
-
-    def remove(self, journal: Journal):
-        self.session.delete(journal)
 
     def get_all(self) -> List[Journal]:
         query = select(Journal)

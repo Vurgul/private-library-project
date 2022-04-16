@@ -131,3 +131,16 @@ def journal_3():
         timedelta=timedelta(days=7),
         returning_date=None
     )
+
+
+@pytest.fixture(scope='function')
+def journal_4():
+    return dataclasses.Journal(
+        id=3,
+        user_id=1,
+        book_id=1,
+        status='take',
+        taking_date=datetime(2021, 4, 15, 12, 0, 0),
+        timedelta=timedelta(days=7),
+        returning_date=None
+    )

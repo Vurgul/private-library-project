@@ -137,9 +137,10 @@ class BookServices:
         users = self.user_repo.get_all()
         for user in users:
             books = self.book_repo.get_top_three(tag)
-            print('-----------')
-            print(f'{user.login}, книги  по теме {tag} для тебя: {books}')
-            print('-----------')
+            if books:
+                print('-----------')
+                print(f'{user.login}, книги  по теме {tag} для тебя: {books}')
+                print('-----------')
 
 
 @component
@@ -272,6 +273,6 @@ class Library:
         return journal_record
 
     @join_point
-    def get_all_j(self):
-        j = self.journal_repo.get_all()
-        return j
+    def get_all_journal_records(self):
+        records = self.journal_repo.get_all()
+        return records

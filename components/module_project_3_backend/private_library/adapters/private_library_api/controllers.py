@@ -119,7 +119,7 @@ class Library:
         )
 
     @join_point
-    def on_get_j(self, request, response):
-        # TODO: НЕ ЗАБЫТЬ ИЗМЕНИТЬ / УДАЛИТЬ
-        js = self.library.get_all_j()
-        response.media = [asdict(j) for j in js]
+    def on_get_journal_records(self, request, response):
+        """Просмотр всех записей о взятии и покипки книг """
+        records = self.library.get_all_journal_records()
+        response.media = [asdict(record) for record in records]

@@ -13,9 +13,6 @@ class UsersRepo(ABC):
     def add(self, user: User): ...
 
     @abstractmethod
-    def remove(self, user: User): ...
-
-    @abstractmethod
     def get_all(self) -> List[User]: ...
 
     @abstractmethod
@@ -32,9 +29,6 @@ class BooksRepo(ABC):
 
     @abstractmethod
     def add(self, book: Book): ...
-
-    @abstractmethod
-    def remove(self, book: Book): ...
 
     @abstractmethod
     def get_all(self) -> List[Book]: ...
@@ -74,9 +68,6 @@ class JournalRepo(ABC):
 
     @abstractmethod
     def add(self, journal: Journal): ...
-
-    @abstractmethod
-    def remove(self, journal: Journal): ...
 
     @abstractmethod
     def get_all(self) -> List[Journal]: ...
