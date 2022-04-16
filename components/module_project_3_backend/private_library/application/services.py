@@ -122,11 +122,11 @@ class BookServices:
                 book_info = requests.get(f'{url_books_isbn}/{isbn13}').json()
                 book_info['price_USD'] = float(book_info['price'][1:])
                 book_info['tag'] = tag
-                book_info = BookInfo(**book_info)
-                self.add_book(book_info)
+                self.add_book(**book_info)
         self.send_message(tag)
 
     @join_point
+    @validate_with_dto
     def add_book(self, book_info: BookInfo):
         if self.book_repo.get_by_isbn13(book_info.isbn13) is None:
             book = book_info.create_obj(Book)

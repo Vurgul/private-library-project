@@ -19,12 +19,16 @@ def book_repo(book_1, book_2, book_3):
     book_repo = Mock(interfaces.BooksRepo)
     book_repo.get_by_id = Mock(return_value=book_1)
     book_repo.get_all = Mock(return_value=[book_1, book_2, book_3])
+    book_repo.get_by_isbn13 = Mock(return_value=None)
     return book_repo
 
 
 @pytest.fixture(scope='function')
 def journal_repo(journal_1, journal_2, journal_3):
-    journal_repo = Mock(interfaces.BooksRepo)
+    journal_repo = Mock(interfaces.JournalRepo)
     journal_repo.get_by_id = Mock(return_value=journal_2)
+    journal_repo.get_by_user_id = Mock(return_value=[journal_2])
+    journal_repo.get_by_book_id = Mock(return_value=[journal_2])
     journal_repo.get_all = Mock(return_value=[journal_1, journal_2, journal_3])
+    journal_repo.get_active_record = Mock(return_value=journal_2)
     return journal_repo
