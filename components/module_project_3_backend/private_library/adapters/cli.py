@@ -14,14 +14,9 @@ def create_cli(publisher: Publisher, MessageBus):
     def library_filling(tags):
         for tag in tags:
             if publisher:
-                publisher.publish(
-                    Message(
-                        'our_exchange',
-                        {
-                            'tag': tag,
-                        }
-                    )
-                )
+                publisher.publish(Message('our_exchange', {
+                    'tag': tag,
+                }))
 
     @cli.command()
     def consumer():

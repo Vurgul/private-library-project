@@ -11,12 +11,11 @@ data_filter = {
     'order_by': 'test',
 }
 
+
 @pytest.fixture(scope='function')
 def service(book_repo, user_repo, journal_repo):
     return Library(
-        book_repo=book_repo,
-        user_repo=user_repo,
-        journal_repo=journal_repo
+        book_repo=book_repo, user_repo=user_repo, journal_repo=journal_repo
     )
 
 
@@ -82,9 +81,7 @@ def test_open_reserve_book(service, user_2, book_1, journal_1):
 
 def test_create_journal_record(service, user_1, book_1):
     service.create_journal_record(
-        user_id=user_1.id,
-        book_id=book_1.id,
-        status='take'
+        user_id=user_1.id, book_id=book_1.id, status='take'
     )
     service.journal_repo.add.assert_called_once()
 
@@ -133,9 +130,3 @@ def test_book_buy(service, user_1, book_1, journal_3):
     service.journal_repo.get_by_book_id = Mock(return_value=[journal_3])
     with pytest.raises(errors.BookBuy):
         service.open_reserve_book(user_1.id, book_1.id)
-
-
-
-
-
-

@@ -13,7 +13,7 @@ class Settings:
 
 
 class DB:
-    engine = create_engine(Settings.db.DB_URL, echo=True)  # , echo=True
+    engine = create_engine(Settings.db.DB_URL, echo=True)    # , echo=True
     database.metadata.create_all(engine)
 
     context = TransactionContext(bind=engine)
@@ -40,9 +40,7 @@ class MessageBus:
 
 
 class Application:
-    authorization = services.Authorization(
-        user_repo=DB.users_repo,
-    )
+    authorization = services.Authorization(user_repo=DB.users_repo, )
     library = services.Library(
         user_repo=DB.users_repo,
         book_repo=DB.books_repo,
@@ -63,4 +61,3 @@ app = private_library_api.create_app(
     authorization=Application.authorization,
     library=Application.library,
 )
-

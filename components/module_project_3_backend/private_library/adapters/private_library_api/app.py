@@ -15,14 +15,9 @@ def create_app(
 
     app = App()
 
-    app.register(controllers.Authorization(
-        authorization=authorization
-        )
-    )
+    app.register(controllers.Authorization(authorization=authorization))
 
-    app.register(controllers.Library(
-        authenticator=authenticator,
-        library=library
-        )
+    app.register(
+        controllers.Library(authenticator=authenticator, library=library)
     )
     return app

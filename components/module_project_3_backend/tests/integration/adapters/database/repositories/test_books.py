@@ -20,8 +20,7 @@ def fill_db_books(session):
             'desc': 'test_desc_1',
             'price_USD': 13.3,
             'tag': 'test_tag_1'
-        },
-        {
+        }, {
             'id': 2,
             'title': 'test_title_2',
             'subtitle': 'test_subtitle_2',
@@ -110,10 +109,8 @@ def test_filter_by_publisher(repo, fill_db_books, session):
     query = repo.get_query()
 
     queries = [
-        repo.filter_by_publisher(
-            publisher,
-            query
-        ) for publisher in publisher_like
+        repo.filter_by_publisher(publisher, query)
+        for publisher in publisher_like
     ]
     results = [repo.get_filter_data(query) for query in queries]
 

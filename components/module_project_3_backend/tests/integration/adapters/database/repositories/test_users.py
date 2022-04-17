@@ -12,14 +12,12 @@ def fill_db_users(session):
             'age': 1,
             'login': 'test_login_1',
             'password': 'test_password_1'
-        },
-        {
+        }, {
             'id': 2,
             'name': 'test_name_2',
             'age': 2,
             'login': 'test_login_2',
             'password': 'test_password_2',
-
         }
     ]
 
@@ -53,8 +51,7 @@ def test_get_all(repo, fill_db_users):
 
 def test_get_by_user_data(repo, fill_db_users):
     result = repo.get_by_user_data(
-        login='test_login_2',
-        password='test_password_2'
+        login='test_login_2', password='test_password_2'
     )
     assert result.id == 2
 

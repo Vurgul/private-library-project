@@ -14,14 +14,12 @@ def fill_db(session):
             'age': 1,
             'login': 'test_login_1',
             'password': 'test_password_1'
-        },
-        {
+        }, {
             'id': 2,
             'name': 'test_name_2',
             'age': 2,
             'login': 'test_login_2',
             'password': 'test_password_2',
-
         }
     ]
 
@@ -40,8 +38,7 @@ def fill_db(session):
             'desc': 'test_desc_1',
             'price_USD': 13.3,
             'tag': 'test_tag_1'
-        },
-        {
+        }, {
             'id': 2,
             'title': 'test_title_2',
             'subtitle': 'test_subtitle_2',
@@ -67,8 +64,7 @@ def fill_db(session):
             'taking_date': datetime(2021, 4, 15, 12, 0, 0),
             'timedelta': timedelta(days=7),
             'returning_date': None,
-        },
-        {
+        }, {
             'id': 2,
             'user_id': 1,
             'book_id': 2,
@@ -76,7 +72,6 @@ def fill_db(session):
             'taking_date': datetime(2021, 4, 15, 12, 0, 0),
             'timedelta': timedelta(days=7),
             'returning_date': None,
-
         }
     ]
 
@@ -127,5 +122,3 @@ def test_get_active_record(repo, fill_db, user_1, user_2):
     assert result_one.user_id == 1
     assert result_one.status == 'take'
     assert result_none is None
-
-

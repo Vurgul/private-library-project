@@ -18,9 +18,7 @@ class Authorization:
     @join_point
     def on_post_authentication(self, request, response):
         """ Прохождение аутентификации -> авторизация"""
-        user = self.authorization.authentication(
-            **request.params
-        )
+        user = self.authorization.authentication(**request.params)
         token = jwt.encode(
             {
                 'sub': user.id,
@@ -51,25 +49,24 @@ class Library:
         """Получить информацию о пользователях"""
         users = self.library.take_users_info()
         response.media = [
-            {'login': user.login, 'id': user.id} for user in users
+            {
+                'login': user.login,
+                'id': user.id
+            } for user in users
         ]
 
     @join_point
     @authenticate
     def on_get_books_filter(self, request, response):
         """Получить информацию о всех книгах с использованием фильтрации"""
-        books = self.library.take_books_with_filter_and_sort(
-            **request.params
-        )
+        books = self.library.take_books_with_filter_and_sort(**request.params)
         response.media = [asdict(book) for book in books]
 
     @join_point
     @authenticate
     def on_get_book(self, request, response):
         """Получить информацию о книге"""
-        book = self.library.take_book_info(
-            **request.params
-        )
+        book = self.library.take_book_info(**request.params)
         response.media = asdict(book)
 
     @join_point
@@ -90,7 +87,6 @@ class Library:
         )
         response.media = asdict(book)
 
-
     @join_point
     @authenticate
     def on_post_reserve_book(self, request, response):
@@ -105,8 +101,7 @@ class Library:
     def on_post_return_book(self, request, response):
         """Вернуть книгу"""
         self.library.close_reserve_book(
-            user_id=request.context.client.user_id,
-            **request.media
+            user_id=request.context.client.user_id, **request.media
         )
 
     @join_point
@@ -114,8 +109,7 @@ class Library:
     def on_post_buy_book(self, request, response):
         """Выкупить книгу"""
         self.library.buy_book(
-            user_id=request.context.client.user_id,
-            **request.media
+            user_id=request.context.client.user_id, **request.media
         )
 
     @join_point

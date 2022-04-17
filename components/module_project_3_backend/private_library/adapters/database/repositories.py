@@ -57,34 +57,24 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
     def filter_by_price(self, price: str, query: object) -> object:
         if 'gte:' in price:
             price = float(price[4:])
-            query = query.where(
-                Book.price_USD >= price
-            )
+            query = query.where(Book.price_USD >= price)
         elif 'lte:' in price:
             price = float(price[4:])
-            query = query.where(
-                Book.price_USD <= price
-            )
+            query = query.where(Book.price_USD <= price)
         else:
             try:
                 price = float(price)
-                query = query.where(
-                    Book.price_USD <= price
-                )
+                query = query.where(Book.price_USD <= price)
             except ValueError:
                 pass
         return query
 
     def filter_by_authors(self, authors: str, query: object) -> List[Book]:
-        query = query.where(
-            Book.authors.ilike(f'%{authors}%')
-        )
+        query = query.where(Book.authors.ilike(f'%{authors}%'))
         return query
 
     def filter_by_publisher(self, publisher: str, query: object) -> object:
-        query = query.where(
-            Book.publisher.ilike(f'%{publisher}%')
-        )
+        query = query.where(Book.publisher.ilike(f'%{publisher}%'))
         return query
 
     def filter_by_keyword(self, keyword: str, query: object) -> object:
@@ -93,19 +83,14 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
                 Book.desc.ilike(f'%{keyword}%'),
                 Book.subtitle.ilike(f'%{keyword}%')
             )
-
         )
         return query
 
     def order_by(self, column: str, query: object) -> object:
         if column == 'price_USD':
-            query = (
-                query.order_by(Book.price_USD)
-            )
+            query = (query.order_by(Book.price_USD))
         if column == 'pages':
-            query = (
-                query.order_by(Book.pages)
-            )
+            query = (query.order_by(Book.pages))
         return query
 
     def get_top_three(self, tag: str) -> List[Book]:
@@ -151,8 +136,7 @@ class JournalRepo(BaseRepository, interfaces.JournalRepo):
 
     def get_active_record(self, user_id: int) -> Optional[Journal]:
         query = select(Journal).where(
-            Journal.status == 'take',
-            Journal.user_id == user_id
+            Journal.status == 'take', Journal.user_id == user_id
         )
         result = self.session.execute(query).scalars().one_or_none()
         return self._parse_date(result)

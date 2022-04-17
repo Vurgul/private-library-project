@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import (Column, DateTime, Float, ForeignKey, Integer, Interval,
-                        MetaData, String, Table)
+from sqlalchemy import (
+    Column, DateTime, Float, ForeignKey, Integer, Interval, MetaData, String,
+    Table
+)
 
 naming_convention = {
     'ix': 'ix_%(column_0_label)s',

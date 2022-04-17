@@ -114,7 +114,7 @@ class BookServices:
         else:
             page_number = count_search_result // 10 + 1
 
-        for i in range(1, page_number+1):
+        for i in range(1, page_number + 1):
             res_page = requests.get(f'{url_search}/{tag}/{i}').json()
             books = res_page['books']
             for book in books:
@@ -163,9 +163,8 @@ class Library:
 
     @join_point
     @validate_with_dto
-    def take_books_with_filter_and_sort(
-        self, filter_date: FilterBook
-    ) -> List[Book]:
+    def take_books_with_filter_and_sort(self,
+                                        filter_date: FilterBook) -> List[Book]:
 
         books = self.book_repo.get_query()
         if filter_date.price_USD is not None:
@@ -175,8 +174,7 @@ class Library:
             )
         if filter_date.publisher is not None:
             books = self.book_repo.filter_by_publisher(
-                filter_date.publisher,
-                books
+                filter_date.publisher, books
             )
         if filter_date.authors is not None:
             books = self.book_repo.filter_by_authors(filter_date.authors, books)
@@ -250,8 +248,7 @@ class Library:
         journal_record = self._validate_journal_record_take_book_exists(user_id)
 
         modern_journal_record = JournalReload(
-            returning_date=datetime.utcnow(),
-            status='return'
+            returning_date=datetime.utcnow(), status='return'
         )
         modern_journal_record.populate_obj(journal_record)
 

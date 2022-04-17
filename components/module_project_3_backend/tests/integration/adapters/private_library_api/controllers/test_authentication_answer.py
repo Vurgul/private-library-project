@@ -2,21 +2,14 @@ from http import HTTPStatus
 
 
 def test_on_post_registration(client):
-    body = {
-        "name": "test",
-        "login": "test",
-        "password": "test"
-    }
+    body = {"name": "test", "login": "test", "password": "test"}
     result = client.simulate_post('/api/authorization/registration', json=body)
     assert result.status_code == HTTPStatus.OK
     assert result.json is None
 
 
 def test_on_post_authentication(client):
-    params = {
-        'login': 'test',
-        'password': 'test'
-    }
+    params = {'login': 'test', 'password': 'test'}
 
     expected = {
         'token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImxvZ2luIj'
@@ -25,8 +18,7 @@ def test_on_post_authentication(client):
     }
 
     result = client.simulate_post(
-        '/api/authorization/authentication',
-        params=params
+        '/api/authorization/authentication', params=params
     )
     assert result.status_code == HTTPStatus.OK
     assert result.json == expected

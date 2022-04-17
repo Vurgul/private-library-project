@@ -22,10 +22,7 @@ data_book = {
 
 @pytest.fixture(scope='function')
 def service(book_repo, user_repo):
-    return BookServices(
-        book_repo=book_repo,
-        user_repo=user_repo
-    )
+    return BookServices(book_repo=book_repo, user_repo=user_repo)
 
 
 def test_add_book(service, book_3):
@@ -44,4 +41,3 @@ def test_not_add_book_repeat_isbn13(service, book_1):
     service.book_repo.get_by_isbn13 = Mock(return_value=book_1)
     service.add_book(**data_book)
     service.book_repo.add.assert_not_called()
-

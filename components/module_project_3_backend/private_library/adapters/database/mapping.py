@@ -11,11 +11,7 @@ mapper.map_imperatively(
     dataclasses.Journal,
     tables.journal,
     properties={
-        'user': relationship(
-            dataclasses.User, uselist=False, lazy='joined'
-        ),
-        'book': relationship(
-            dataclasses.Book, uselist=False, lazy='joined'
-        ),
+        'user': relationship(dataclasses.User, uselist=False, lazy='joined'),
+        'book': relationship(dataclasses.Book, uselist=False, lazy='joined'),
     }
 )

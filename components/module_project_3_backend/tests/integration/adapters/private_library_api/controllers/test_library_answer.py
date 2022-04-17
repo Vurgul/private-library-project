@@ -1,8 +1,10 @@
 from http import HTTPStatus
 
-TEST_TOKEN = ('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjQsImxvZ'
-              '2luIjoidGVzdDQiLCJuYW1lIjoidGVzdDQiLCJncm91cCI6IlVzZXIi'
-              'fQ.SolZr2F5ITAWSKTJ_kXLk0jHF8MfI8Oua2V7uLX95gE')
+TEST_TOKEN = (
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjQsImxvZ'
+    '2luIjoidGVzdDQiLCJuYW1lIjoidGVzdDQiLCJncm91cCI6IlVzZXIi'
+    'fQ.SolZr2F5ITAWSKTJ_kXLk0jHF8MfI8Oua2V7uLX95gE'
+)
 
 
 def test_on_get_books(client, library_service, book_1):
@@ -42,12 +44,7 @@ def test_on_get_users(client, library_service, user_1):
 
     library_service.take_users_info.return_value = [user_1]
 
-    expected = [
-        {
-            'id': 1,
-            'login': 'test_login_1'
-        }
-    ]
+    expected = [{'id': 1, 'login': 'test_login_1'}]
 
     result = client.simulate_get(
         path='/api/library/users',
@@ -60,10 +57,7 @@ def test_on_get_users(client, library_service, user_1):
 
 def test_on_get_books_filter(client, library_service, book_1):
     book_1.price_USD = 41
-    params = {
-        'order_by': 'price_USD',
-        'price_USD': 'gte:40'
-    }
+    params = {'order_by': 'price_USD', 'price_USD': 'gte:40'}
 
     library_service.take_books_with_filter_and_sort.return_value = [book_1]
 
