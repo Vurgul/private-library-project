@@ -41,18 +41,18 @@ def user_3():
 def book_1():
     return dataclasses.Book(
         id=1,
-        title="test_title_1",
-        subtitle="test_subtitle_1",
-        authors="test_authors_1",
-        publisher="test_publisher_1",
-        language="test_language_1",
-        isbn13="test_isbn13_1",
+        title='test_title_1',
+        subtitle='test_subtitle_1',
+        authors='test_authors_1',
+        publisher='test_publisher_1',
+        language='test_language_1',
+        isbn13='test_isbn13_1',
         pages=100,
         year=2001,
         rating=1.0,
-        desc="test_desc_1",
+        desc='test_desc_1',
         price_USD=11.1,
-        tag="test_tag_1"
+        tag='test_tag_1'
     )
 
 
@@ -60,18 +60,18 @@ def book_1():
 def book_2():
     return dataclasses.Book(
         id=2,
-        title="test_title_2",
-        subtitle="test_subtitle_2",
-        authors="test_authors_2",
-        publisher="test_publisher_2",
-        language="test_language_2",
-        isbn13="test_isbn13_2",
+        title='test_title_2',
+        subtitle='test_subtitle_2',
+        authors='test_authors_2',
+        publisher='test_publisher_2',
+        language='test_language_2',
+        isbn13='test_isbn13_2',
         pages=200,
         year=2002,
         rating=2.0,
-        desc="test_desc_2",
+        desc='test_desc_2',
         price_USD=12.2,
-        tag="test_tag_2"
+        tag='test_tag_2'
     )
 
 
@@ -79,18 +79,18 @@ def book_2():
 def book_3():
     return dataclasses.Book(
         id=3,
-        title="test_title_3",
-        subtitle="test_subtitle_3",
-        authors="test_authors_3",
-        publisher="test_publisher_3",
-        language="test_language_3",
-        isbn13="test_isbn13_3",
+        title='test_title_3',
+        subtitle='test_subtitle_3',
+        authors='test_authors_3',
+        publisher='test_publisher_3',
+        language='test_language_3',
+        isbn13='test_isbn13_3',
         pages=300,
         year=2003,
         rating=3.0,
-        desc="test_desc_3",
+        desc='test_desc_3',
         price_USD=13.3,
-        tag="test_tag_3"
+        tag='test_tag_3'
     )
 
 

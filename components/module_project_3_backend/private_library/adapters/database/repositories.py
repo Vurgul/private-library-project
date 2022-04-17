@@ -1,4 +1,5 @@
-from datetime import datetime
+import re
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 from evraz.classic.components import component
@@ -141,6 +142,17 @@ class JournalRepo(BaseRepository, interfaces.JournalRepo):
         result = self.session.execute(query).scalars().one_or_none()
         return self._parse_date(result)
 
+    def get_time_delta(self, id: int) -> int:
+        query = select(Journal).where(Journal.id == id)
+        journal = self.session.execute(query).scalars().one_or_none()
+        journal.taking_date = datetime.strptime(
+            journal.taking_date, '%Y-%m-%d %H:%M:%S'
+        )
+        journal_timedelta = re.search(r'\d*', journal.timedelta).group(0)
+        delta = journal.returning_date - journal.taking_date
+        result = int(journal_timedelta) - int(delta.days)
+        return result
+
     @classmethod
     def _parse_date(cls, journal: Journal) -> Journal:
         if journal is not None:
@@ -149,7 +161,7 @@ class JournalRepo(BaseRepository, interfaces.JournalRepo):
                     '%Y-%m-%d %H:%M:%S'
                 )
 
-            if journal.timedelta is not None:
+            if isinstance(journal.timedelta, timedelta):
                 journal.timedelta = str(journal.timedelta)
 
             if isinstance(journal.returning_date, datetime):

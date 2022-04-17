@@ -1,0 +1,65 @@
+@startuml
+
+header Демо проект "частная библиотека"
+title Диаграмма развертывания
+
+actor User
+rectangle "Контейнеры" {
+      rectangle "HTTP API" {
+        component HTTP_API [
+          HTTP API Service
+          Gunicorn
+        ]
+
+        component EventProducer [
+          Event Producer
+          Python app
+        ]
+
+        note top of EventProducer {
+          Посылает тэги для поиска книг
+        }
+      }
+      rectangle "Consumers" {
+        component EventConsumer [
+          Event Consumer
+          Python app
+        ]
+
+        note top of EventConsumer {
+          Принимает тэги для добавления книг, добавляет книги в БД
+        }
+      }
+    }
+
+[Ingress]
+    component NginxServer [
+      Nginx
+    ]
+
+component RabbitMQ [
+        RabbitMQ instance
+    ]
+
+rectangle "СУБД приложения" {
+    node "Demo project DBMS" {
+      [Postgres SQL] as demo_project_db
+
+      note bottom of demo_project_db {
+        Отдельная база данных
+        на каждое окружение
+      }
+    }
+  }
+
+User -- Ingress : HTTP
+
+Ingress -- NginxServer : HTTP
+Ingress -- HTTP_API : HTTP
+HTTP_API -- demo_project_db : TDS
+
+EventProducer - RabbitMQ: AMPQ
+EventConsumer - demo_project_db : TDS
+EventConsumer - RabbitMQ : AMPQ
+
+@enduml

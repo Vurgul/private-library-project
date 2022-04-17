@@ -103,3 +103,7 @@ class JournalRepo(ABC):
     @abstractmethod
     def get_active_record(self, user_id: int) -> Optional[Journal]:
         ...
+
+    @abstractmethod
+    def get_time_delta(self, id: int) -> int:
+        ...

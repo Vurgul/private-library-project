@@ -1,5 +1,6 @@
-import requests
 from http import HTTPStatus
+
+import requests
 
 
 def test_take_message():

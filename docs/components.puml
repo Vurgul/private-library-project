@@ -3,26 +3,34 @@ header Демо проект "частная библиотека"
 title Диаграмма компонентов
 
 
-node "BackendServes"{
-    component "Private library" as PL
-    component "Consumer" as consumer
+rectangle "Interfaces (Primary Adapters)" {
+  [Library API] as lib_api
+  [Rabbitmq consumer] as rabbitmq_consumer
 }
 
-node "DatabaseServer"{
-    component "PostgreSQL"  as PSQL
+rectangle "Application" {
+  [Library] as library
+  interface "Library repositories" as library_repositories
+  interface "Library publisher" as library_publisher
 }
 
-node "RabbitServer"{
-    component "RabbitMQ"  as RMQ
+rectangle "Adapters (Secondary Adapters)" {
+  [Database] as database
+  [Publisher] as publisher
 }
 
-() "Library_API"  as LAPI
+() "AMQP" as amqp
+() "HTTP API" as http_api
 
-RMQ -- consumer
-PL --( library_repositories
-PSQL -- library_repositories
-PL --( library_publisher
-library_publisher --> RMQ: cli
-LAPI -- PL : have
+rabbitmq_consumer -u-( amqp
+lib_api -u-( http_api
+lib_api ..> library
+rabbitmq_consumer ..> library
+
+library --( library_repositories
+library --( library_publisher
+
+publisher -u- library_publisher
+database -u- library_repositories
 
 @enduml

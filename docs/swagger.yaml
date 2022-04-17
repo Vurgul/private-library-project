@@ -1,0 +1,203 @@
+openapi: 3.0.0
+info:
+  title: Library EndPoints
+  version: 1.0.0
+servers:
+  - url: http://localhost:8880
+  - url: https://api.itbook.store
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+paths:
+  /api/authorization/registration:
+    post:
+      tags:
+        - General
+      summary: Authorization/registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: test
+                login: test
+                password: test
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/authorization/authentication:
+    post:
+      tags:
+        - General
+      summary: Authorization/authentication
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
+      parameters:
+        - name: login
+          in: query
+          schema:
+            type: string
+          example: test
+        - name: password
+          in: query
+          schema:
+            type: string
+          example: test
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/books:
+    get:
+      tags:
+        - General
+      summary: Library/books
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/books_filter:
+    get:
+      tags:
+        - General
+      summary: Library/books_filter
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/book:
+    get:
+      tags:
+        - General
+      summary: Library/book
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: book_id
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/journal:
+    get:
+      tags:
+        - General
+      summary: Library/journal
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/active_book:
+    get:
+      tags:
+        - General
+      summary: Library/active_book
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/reserve_book:
+    post:
+      tags:
+        - General
+      summary: Library/reserve_book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                book_id: 2
+                time_delta: 25
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/return_book:
+    post:
+      tags:
+        - General
+      summary: Library/return_book
+      requestBody:
+        content: {}
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/buy_book:
+    post:
+      tags:
+        - General
+      summary: Library/buy_book
+      requestBody:
+        content: {}
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/users:
+    get:
+      tags:
+        - General
+      summary: Library/users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/library/journal_records:
+    get:
+      tags:
+        - General
+      summary: Library/journal_records
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/search/monga:
+    get:
+      tags:
+        - General
+      summary: External service
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

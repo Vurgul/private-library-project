@@ -22,8 +22,6 @@ def authorization_service(user_1):
 @pytest.fixture(scope='function')
 def client(library_service, authorization_service):
     app = private_library_api.create_app(
-    #is_dev_mode=True,
-    #allow_origins='*',
         library=library_service,
         authorization=authorization_service,
     )

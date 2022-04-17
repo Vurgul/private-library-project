@@ -100,20 +100,20 @@ class Library:
     @authenticate
     def on_post_return_book(self, request, response):
         """Вернуть книгу"""
-        self.library.close_reserve_book(
-            user_id=request.context.client.user_id, **request.media
+        debt = self.library.close_reserve_book(
+            user_id=request.context.client.user_id
         )
+        if debt is not None:
+            response.media = {'Booking overdue': debt}
 
     @join_point
     @authenticate
     def on_post_buy_book(self, request, response):
         """Выкупить книгу"""
-        self.library.buy_book(
-            user_id=request.context.client.user_id, **request.media
-        )
+        self.library.buy_book(user_id=request.context.client.user_id)
 
     @join_point
     def on_get_journal_records(self, request, response):
-        """Просмотр всех записей о взятии и покипки книг """
+        """Просмотр всех записей о взятии и покупки книг """
         records = self.library.get_all_journal_records()
         response.media = [asdict(record) for record in records]

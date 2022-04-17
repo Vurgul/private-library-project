@@ -232,6 +232,7 @@ class Library:
             user_id=user_id,
             book_id=book_id,
             status='take',
+            taking_date=datetime.utcnow(),
             timedelta=timedelta(days=time_delta),
         )
         self.create_journal_record(**journal_info.dict())
@@ -251,6 +252,9 @@ class Library:
             returning_date=datetime.utcnow(), status='return'
         )
         modern_journal_record.populate_obj(journal_record)
+        debt = self.journal_repo.get_time_delta(journal_record.id)
+        if debt < 0:
+            return f'{abs(debt)} days'
 
     @join_point
     @validate_arguments

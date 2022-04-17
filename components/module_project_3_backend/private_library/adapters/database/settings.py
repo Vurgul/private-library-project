@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     port = os.getenv('PORT', '5432')
     database = os.getenv('DATABASE', 'test')
 
-    DB_URL = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}"
+    DB_URL = f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}'
 
     LOGGING_LEVEL: str = 'INFO'
     SA_LOGS: bool = False

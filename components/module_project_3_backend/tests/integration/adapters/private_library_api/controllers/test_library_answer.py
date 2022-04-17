@@ -183,6 +183,7 @@ def test_on_post_reserve_book(client, library_service, book_1):
 
 
 def test_on_post_return_book(client, library_service):
+    library_service.close_reserve_book.return_value = []
     result = client.simulate_post(
         path='/api/library/return_book',
         headers={'Authorization': f'Bearer {TEST_TOKEN}'},

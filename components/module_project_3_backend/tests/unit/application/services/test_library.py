@@ -87,8 +87,10 @@ def test_create_journal_record(service, user_1, book_1):
 
 
 def test_close_reserve_book(service, user_1):
+    service.journal_repo.get_time_delta = Mock(return_value=0)
     service.close_reserve_book(user_1.id)
     service.journal_repo.get_active_record.assert_called_once()
+    service.journal_repo.get_time_delta.assert_called_once()
 
 
 def test_buy_book(service, user_1):
