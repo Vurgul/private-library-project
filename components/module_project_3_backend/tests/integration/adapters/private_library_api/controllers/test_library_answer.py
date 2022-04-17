@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-
 TEST_TOKEN = ('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjQsImxvZ'
               '2luIjoidGVzdDQiLCJuYW1lIjoidGVzdDQiLCJncm91cCI6IlVzZXIi'
               'fQ.SolZr2F5ITAWSKTJ_kXLk0jHF8MfI8Oua2V7uLX95gE')

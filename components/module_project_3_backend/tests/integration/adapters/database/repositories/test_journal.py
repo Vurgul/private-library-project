@@ -1,5 +1,6 @@
-import pytest
 from datetime import datetime, timedelta
+
+import pytest
 from private_library.adapters.database import tables
 from private_library.adapters.database.repositories import JournalRepo
 
